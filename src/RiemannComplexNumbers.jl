@@ -2,14 +2,55 @@
 
 module RiemannComplexNumbers
 
+import Base.show, Base.isinf, Base.isnan
+
 export RiemannComplexNumber, CX
 
-immutable RiemannComplexNumber{T<:Real} <: Number
-	z::Complex{T}
+immutable RiemannComplexNumber <: Number
+    z::Complex
+    function RiemannComplexNumber(z::Complex)
+        x,y = CX_adjust(z.re,z.im)
+        new(x + y*im)
+    end
 end
 
 typealias CX RiemannComplexNumber
 
+function CX_adjust{T<:Real}(x::T, y::T)
+
+    if isnan(x)||isnan(y)
+        n::T = convert(T,NaN)
+        return (n, n)
+    end
+
+    if isinf(x)||isinf(y)
+        in::T = convert(T,Inf)
+        return (in,in)
+    end
+
+    xx::T = x!=0 ? x : zero(T)
+    yy::T = y!=0 ? y : zero(T)
+
+    return (xx,yy)
+end
+
+CX(x::Real, y::Real) = CX( Complex(x,y) )
+CX(x::Real) = CX( Complex(x,0) )
+
+const ComplexInf = CX(Inf)
+const ComplexNaN = CX(NaN)
+
+isinf(z::CX) = isinf(z.z)
+isnan(z::CX) = isnan(z.z.re)
+
+function show(io::IO, z::CX)
+    if isinf(z)
+        show(io,"ComplexInf")
+    elseif isnan(z)
+        show(io,"ComplexNaN")
+    else
+        show(io, xy.z)
+    end
 end
 
 # THIS IS THE OFFICIAL COMPLEX NUMBER CODE I'M GOING TO MODIFY`
