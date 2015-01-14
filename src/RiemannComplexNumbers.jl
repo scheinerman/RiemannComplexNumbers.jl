@@ -2,9 +2,15 @@
 
 module RiemannComplexNumbers
 
-import Base.show, Base.isinf, Base.isnan
+import Base.show, Base.convert, Base.promote_rule
 
-export RiemannComplexNumber, CX
+import Base.isinf, Base.isfinite, Base.isnan
+import Base.real, Base.imag, Base.reim
+import Base.conj, Base.abs, Base.norm, Base.angle
+import Base.isreal, Base.isimag, Base.isinteger
+
+
+export RiemannComplexNumber, CX, ComplexInf, ComplexNaN
 
 immutable RiemannComplexNumber <: Number
     z::Complex
@@ -37,6 +43,20 @@ end
 CX(x::Real, y::Real) = CX( Complex(x,y) )
 CX(x::Real) = CX( Complex(x,0) )
 
+convert(::Type{CX}, a::Number) = CX(a)
+
+
+promote_rule{S<:Real}(::Type{CX}, ::Type{S}) = CX
+promote_rule{S<:Real}(::Type{CX}, ::Type{Complex{S}}) = CX
+
+
+## promote_rule{T<:Real,S<:Real}(::Type{Complex{T}}, ::Type{S}) =
+##     Complex{promote_type(T,S)}
+## promote_rule{T<:Real,S<:Real}(::Type{Complex{T}}, ::Type{Complex{S}}) =
+##     Complex{promote_type(T,S)}
+
+
+
 const ComplexInf = CX(Inf)
 const ComplexNaN = CX(NaN)
 
@@ -45,13 +65,35 @@ isnan(z::CX) = isnan(z.z.re)
 
 function show(io::IO, z::CX)
     if isinf(z)
-        show(io,"ComplexInf")
+        print(io,"ComplexInf")
     elseif isnan(z)
-        show(io,"ComplexNaN")
+        print(io,"ComplexNaN")
     else
-        show(io, xy.z)
+        show(io, z.z)
     end
 end
+
+real(z::CX) = real(z.z)
+imag(z::CX) = imag(z.z)
+reim(z::CX) = reim(z.z)
+
+conj(z::CX) = conj(z.z)
+
+isinf(z::CX) = isinf(z.z)
+isfinite(z::CX) = ~isinf(z)
+isnan(z::CX) = isnan(z.z)
+
+isreal(z::CX) = imag(z)==0
+isimag(z::CX) = imag(z)==0
+isinteger(z::CX) = isinteger(z.z)
+
+abs(z::CX) = abs(z.z)
+norm(z::CX) = norm(z.z)
+angle(z::CX) = angle(z.z)
+
+
+
+end # END OF MODULE
 
 # THIS IS THE OFFICIAL COMPLEX NUMBER CODE I'M GOING TO MODIFY`
 
