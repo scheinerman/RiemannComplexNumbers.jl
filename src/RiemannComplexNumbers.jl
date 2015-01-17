@@ -1,14 +1,113 @@
-# THIS IS A PLACE HOLDER ... MUCH MORE TO COME!
+# This package redefines Complex operations so that there is a single
+# complex infinity and a single complex NaN.
+
+# import Base./
 
 
-import Base./
+module RiemannComplexNumbers
+
+export ComplexNan, ComplexInf
 
 const ComplexNaN = Complex(NaN,NaN)
 const ComplexInf = Complex(Inf,Inf)
 
-function /(w::Complex, z::Complex)
+# Addition
 
-    println("Dividing ", w, " by ", z)   # DEBUG #
+function +(w::Complex, z::Complex)
+
+    w,z = promote(w,z)
+    if isnan(w) || isnan(z)
+        return ComplexNaN
+    end
+
+    if isinf(w)
+        if isinf(z)
+            return ComplexNaN
+        end
+        return ComplexInf
+    end
+    if isinf(z)
+        return ComplexInf
+    end
+
+    return Complex(w.re+z.re, w.im+z.im)
+end
+
++(w::Complex, x::Real) = w + Complex(x)
++(x::Real, w::Complex) = Complex(x) + w
+
+# Binary minus
+
+function -(w::Complex, z::Complex)
+
+    w,z = promote(w,z)
+    if isnan(w) || isnan(z)
+        return ComplexNaN
+    end
+
+    if isinf(w)
+        if isinf(z)
+            return ComplexNaN
+        end
+        return ComplexInf
+    end
+    if isinf(z)
+        return ComplexInf
+    end
+
+    return Complex(w.re-z.re, w.im-z.im)
+end
+
+-(w::Complex, x::Real) = w - Complex(x)
+-(x::Real, w::Complex) = Complex(x) - w
+
+# Unary minus
+
+function -(w::Complex)
+    if isnan(w)
+        return ComplexNan
+    end
+
+    if isinf(w)
+        return ComplexInf
+    end
+
+    return Complex(-w.re, -w.im)
+end
+
+# Multiplication
+
+function *(w::Complex, z::Complex)
+    w,z = promote(w,z)
+
+    if isnan(w) || isnan(z)
+        return ComplexNaN
+    end
+
+    if isinf(w)
+        if z==0
+            return ComplexNaN
+        end
+        return ComplexInf
+    end
+
+    if isinf(z)
+        if w==0
+            return ComplexNaN
+        end
+        return ComplexInf
+    end
+
+    return Complex(w.re*z.re - w.im*z.im , w.re*z.im + w.im*z.re)
+
+end
+
+*(w::Complex, x::Real) = w * Complex(x)
+*(x::Real, w::Complex) = Complex(x) * w
+
+#Division
+
+function /(w::Complex, z::Complex)
 
     w,z = promote(w,z)
 
@@ -20,7 +119,7 @@ function /(w::Complex, z::Complex)
         if isinf(w)
             return ComplexNaN
         end
-        return Complex(zero(z))
+        return zero(typeof(z))
     end
 
     if z==0
@@ -43,3 +142,5 @@ end
 /(w::Complex, x::Real) = w/Complex(x)
 /(x::Real, z::Complex) = Complex(x)/z
 
+
+end # end of module
