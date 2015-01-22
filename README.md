@@ -70,7 +70,7 @@ julia> (Inf + 3im) == (Inf + 2im)
 true
 ```
 
-Adding a finite value of `ComplexInf` yields `ComplexInf`, as does
+Adding a finite value to `ComplexInf` yields `ComplexInf`, as does
 multiplying `ComplexInf` by a nonzero value. However, other operations
 may result in `ComplexNaN`:
 
@@ -92,7 +92,7 @@ The last example deserves a bit of explanation. For real arithmetic
 `Inf-Inf` yields `NaN`, but `Inf+Inf` yields `Inf`. This is
 sensible. But for `Complex` values with a single `ComplexInf`, there
 is no difference between adding or subtracting two `ComplexInf`
-values.
+values. (This is the same behavior as in *Mathematica*.)
 
 Note that division by infinity yields zero as expected:
 
