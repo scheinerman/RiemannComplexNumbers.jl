@@ -92,12 +92,7 @@ The last example deserves a bit of explanation. For real arithmetic
 `Inf-Inf` yields `NaN`, but `Inf+Inf` yields `Inf`. This is
 sensible. But for `Complex` values with a single `ComplexInf`, there
 is no difference between adding or subtracting two `ComplexInf`
-<<<<<<< HEAD
-values. This behavior (producing an indeterminate value) mirrors that
-of *Mathematica*.
-=======
 values. (This is the same behavior as in *Mathematica*.)
->>>>>>> e7c03fb90b8578e03971c63680e9974f582bef5f
 
 Note that division by infinity yields zero as expected:
 
@@ -139,7 +134,7 @@ julia> 1/z
 
 julia> using RiemannComplexNumbers
 Warning: Method definition Complex(Real,Real) in ... 
-and so on for many lines
+(and so on for many lines)
 
 julia> 1/z
 0.0 - 4.999999999999999im
