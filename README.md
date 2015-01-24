@@ -92,7 +92,8 @@ The last example deserves a bit of explanation. For real arithmetic
 `Inf-Inf` yields `NaN`, but `Inf+Inf` yields `Inf`. This is
 sensible. But for `Complex` values with a single `ComplexInf`, there
 is no difference between adding or subtracting two `ComplexInf`
-values.
+values. This behavior (producing an indeterminate value) mirrors that
+of *Mathematica*.
 
 Note that division by infinity yields zero as expected:
 
@@ -100,13 +101,14 @@ Note that division by infinity yields zero as expected:
 julia> im/ComplexInf
 0.0 + 0.0im
 ```
+## Miscellaneous
 
-### A few technical notes
+### Technical notes
 
 The `RiemannComplexNumbers` module does not define a new `Complex`
 type; it only redefines basic operations to give sensible results. At
 this writing, the redefined division operator is not as carefully
-implemented as the original; this could be fixed.
+implemented as the original; this should be fixed.
 
 The redefined arithmetic operations are less efficient than the
 originals as various checks are performed to ensure consistent
@@ -120,8 +122,27 @@ the `show` function has been redefined to print this as
 opposed to `3 + 2im`. The compact forms for `ComplexInf` and
 `ComplexNaN` are `C_Inf` and `C_NaN`.
 
+### Need to fix things up
 
-## An alternative solution
+Our current reimplementation of complex floating point arithmetic, even for finite values, is not the same as the functions distributed with Julia and need to be updated. In particular, Julia's division handles floating point values more accurately.  Observe:
+
+```julia
+julia> z = (1/5)*im
+0.0 + 0.2im
+
+julia> 1/z
+0.0 - 5.0im
+
+julia> using RiemannComplexNumbers
+Warning: Method definition Complex(Real,Real) in ... 
+and so on for many lines
+
+julia> 1/z
+0.0 - 4.999999999999999im
+```
+
+
+### An alternative solution
 
 It would be possible, and perhaps desirable, to create an alternative
 `Complex` type (say, `RiemannComplex`) that is simply a wrapper around
