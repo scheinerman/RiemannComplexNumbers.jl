@@ -14,35 +14,24 @@ function Complex(x::Real, y::Real)
     if isnan(x) || isnan(y)
         return ComplexNaN
     end
+
     if isinf(x) || isinf(y)
         return ComplexInf
     end
+
+    if x==0
+        x = zero(x)
+    end
+    if y==0
+        y = zero(y)
+    end
+
     return Complex(promote(x,y)...)
 end
 
-function show(io::IO, z::Complex)
-    if isnan(z)
-        print(io, "ComplexNaN")
-        return
-    end
-    if isinf(z)
-        print(io, "ComplexInf")
-        return
-    end
-    complex_show(io,z,false)
-end
+show(io::IO, z::Complex)        = print(io, string(z,false))
+showcompact(io::IO, z::Complex) = print(io,string(z,true))
 
-function showcompact(io::IO, z::Complex)
-    if isnan(z)
-        print(io, "C_NaN")
-        return
-    end
-    if isinf(z)
-        print(io, "C_Inf")
-        return
-    end
-    complex_show(io,z,true)
-end
 
 #### BASIC FOUR OPERATIONS ####
 
@@ -189,5 +178,73 @@ end
 
 ==(w::Complex, x::Real) = w == Complex(x)
 ==(x::Real, z::Complex) = Complex(x) == z
+
+
+import Base.string, Base.hash
+
+function string(z::Complex,compact::Bool=true)
+    if isnan(z)
+        if compact
+            return "C_NaN"
+        else
+            return "ComplexNaN"
+        end
+    end
+
+    if isinf(z)
+        if compact
+            return "C_Inf"
+        else
+            return "ComplexInf"
+        end
+    end
+
+    a,b = reim(z)
+
+    # This is to hide -0.0
+    if a==0
+        a = zero(a)
+    end
+
+    if b==0
+        b = zero(b)
+    end
+
+    sp = " "
+    if compact
+        sp = ""
+    end
+
+    op = "+"
+    if b<0
+        op = "-"
+    end
+
+    return string(a) * sp * op * sp * string(abs(b)) * "im"
+
+end
+
+function hash(z::Complex, h::Uint = uint(0) )
+    (a,b) = reim(z)
+
+    if a==0
+        a = zero(a)
+    end
+
+    if b==0
+        b = zero(b)
+    end
+
+    if isnan(z)
+        a = NaN
+        b = NaN
+    elseif isinf(z)
+        a = Inf
+        b = Inf
+    end
+
+    return hash(a,hash(b,h))
+end
+
 
 end # end of module RiemannComplexNumbers
