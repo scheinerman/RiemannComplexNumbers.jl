@@ -143,8 +143,8 @@ function /(w::Complex, z::Complex)
     return Complex(top.re/d, top.im/d)
 end
 
-/(w::Complex, x::Real) = w/Complex(x)
-/(x::Real, z::Complex) = Complex(x)/z
+/(w::Complex, x::Real) = w * my_inv(Complex(x))
+/(x::Real, z::Complex) = Complex(x)*my_inv(z)
 
 function my_inv(z::Complex)
     if isnan(z)
@@ -156,7 +156,8 @@ function my_inv(z::Complex)
     if z == 0
         return ComplexInf
     end
-    return conj(z)/abs2(z)
+    d = abs2(z)
+    return Complex(z.re/d, -z.im/d)
 end
 
 # These cover the cases in complex.jl (Julia 0.3.5)
