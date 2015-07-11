@@ -100,9 +100,8 @@ Note that division by infinity yields zero as expected:
 julia> im/ComplexInf
 0.0 + 0.0im
 ```
-## Miscellaneous
 
-### Technical notes
+### Note
 
 The `RiemannComplexNumbers` module does not define a new `Complex`
 type; it only redefines basic operations to give sensible results. At
@@ -121,9 +120,14 @@ the `show` function has been redefined to print this as
 opposed to `3 + 2im`. The compact forms for `ComplexInf` and
 `ComplexNaN` are `C_Inf` and `C_NaN`.
 
-### Need to fix things up
+## Problems with complex division
 
-Our current reimplementation of complex floating point arithmetic, even for finite values, is not the same as the functions distributed with Julia and need to be updated. In particular, Julia's division handles floating point values more accurately.  Observe:
+### Inaccuracies
+
+Our current reimplementation of complex floating point arithmetic,
+even for finite values, is not the same as the functions distributed
+with Julia and need to be updated. In particular, Julia's division
+handles floating point values more accurately.  Observe:
 
 ```julia
 julia> z = (1/5)*im
@@ -140,8 +144,40 @@ julia> 1/z
 0.0 - 4.999999999999999im
 ```
 
+### Our division method doesn't always get executed
 
-### An alternative solution
+Division of a nonzero `Complex` value by zero should give
+`ComplexInf`, as in this example:
+```julia
+julia> (1+0im)/(0+0im)
+ComplexInf
+```
+
+However, when we divide these as floating point complex numbers, we
+run into trouble:
+```julia
+julia> (1.0+0.0im)/(0.0+0.0im)
+ComplexNaN
+```
+The answer, of course, should be `ComplexInf`.
+
+Somehow, the integer version gets routed to the correct method, but
+the floating point version does not:
+```juliajulia> @which (1+0im)/(0+0im)
+/(w::Complex{T<:Real},z::Complex{T<:Real}) at /home/ers/.julia/v0.3/RiemannComplexNumbers/src/RiemannComplexNumbers.jl:122
+
+julia> @which (1.0+0.0im)/(0.0+0.0im)
+/(z::Complex{Float64},w::Complex{Float64}) at complex.jl:162
+```
+
+Thanks to @pearlzli for pointing this out. Anyone know how to fix this??
+
+
+
+
+
+
+## An alternative solution
 
 It would be possible, and perhaps desirable, to create an alternative
 `Complex` type (say, `RiemannComplex`) that is simply a wrapper around
