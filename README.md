@@ -163,7 +163,8 @@ The answer, of course, should be `ComplexInf`.
 
 Somehow, the integer version gets routed to the correct method, but
 the floating point version does not:
-```juliajulia> @which (1+0im)/(0+0im)
+```julia
+julia> @which (1+0im)/(0+0im)
 /(w::Complex{T<:Real},z::Complex{T<:Real}) at /home/ers/.julia/v0.3/RiemannComplexNumbers/src/RiemannComplexNumbers.jl:122
 
 julia> @which (1.0+0.0im)/(0.0+0.0im)
