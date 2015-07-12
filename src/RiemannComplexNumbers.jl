@@ -1,14 +1,29 @@
 # This package redefines Complex operations so that there is a single
 # complex infinity and a single complex NaN.
 
+import Base.inv, Base.Complex, Base.show, Base.showcompact
+
 module RiemannComplexNumbers
-
-import Base.inv, Base.Complex, Base.complex_show, Base.show, Base.showcompact
-
-export ComplexNaN, ComplexInf, inv
 
 const ComplexNaN = Complex(NaN,NaN)
 const ComplexInf = Complex(Inf,Inf)
+export ComplexNaN, ComplexInf
+
+function my_inv(z::Complex)
+    if isnan(z)
+        return ComplexNaN
+    end
+    if isinf(z)
+        return zero(z)
+    end
+    if z == 0
+        return ComplexInf
+    end
+    d = abs2(z)
+    return Complex(z.re/d, -z.im/d)
+end
+
+end # end module
 
 function Complex(x::Real, y::Real)
     if isnan(x) || isnan(y)
@@ -143,27 +158,14 @@ function /(w::Complex, z::Complex)
     return Complex(top.re/d, top.im/d)
 end
 
-/(w::Complex, x::Real) = w * my_inv(Complex(x))
-/(x::Real, z::Complex) = Complex(x)*my_inv(z)
+/(w::Complex, x::Real) = w * RiemannComplexNumbers.my_inv(Complex(x))
+/(x::Real, z::Complex) = Complex(x)*RiemannComplexNumbers.my_inv(z)
 
-function my_inv(z::Complex)
-    if isnan(z)
-        return ComplexNaN
-    end
-    if isinf(z)
-        return zero(z)
-    end
-    if z == 0
-        return ComplexInf
-    end
-    d = abs2(z)
-    return Complex(z.re/d, -z.im/d)
-end
-
-# These cover the cases in complex.jl (Julia 0.3.5)
-inv(w::Complex{Float64}) = my_inv(w)
-inv(w::Complex{Integer}) = my_inv(w)
-inv(w::Complex) = my_inv(w)
+# These cover the cases in complex.jl (Julia 0.3.10)
+inv(w::Complex{Float64}) = RiemannComplexNumbers.my_inv(w)
+inv{T<:Integer}(w::Complex{T}) = RiemannComplexNumbers.my_inv(w)
+inv{T<:Union(Float16,Float32)}(w::Complex{T}) = RiemannComplexNumbers.my_inv(w)
+inv(w::Complex) = RiemannComplexNumbers.my_inv(w)
 
 # Equality
 
@@ -246,6 +248,3 @@ function hash(z::Complex, h::Uint = uint(0) )
 
     return hash(a,hash(b,h))
 end
-
-
-end # end of module RiemannComplexNumbers
