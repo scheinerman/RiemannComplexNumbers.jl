@@ -3,27 +3,9 @@
 
 import Base.inv, Base.Complex, Base.show, Base.showcompact
 
-module RiemannComplexNumbers
 
-const ComplexNaN = Complex(NaN,NaN)
-const ComplexInf = Complex(Inf,Inf)
-export ComplexNaN, ComplexInf
 
-function my_inv(z::Complex)
-    if isnan(z)
-        return ComplexNaN
-    end
-    if isinf(z)
-        return zero(z)
-    end
-    if z == 0
-        return ComplexInf
-    end
-    d = abs2(z)
-    return Complex(z.re/d, -z.im/d)
-end
 
-end # end module
 
 function Complex(x::Real, y::Real)
     if isnan(x) || isnan(y)
@@ -43,6 +25,56 @@ function Complex(x::Real, y::Real)
 
     return Complex(promote(x,y)...)
 end
+
+
+module RiemannComplexNumbers
+
+const ComplexNaN = Complex(NaN,NaN)
+const ComplexInf = Complex(Inf,Inf)
+
+export ComplexNaN, ComplexInf
+
+function my_inv(z::Complex)
+    if isnan(z)
+        return ComplexNaN
+    end
+    if isinf(z)
+        return zero(z)
+    end
+    if z == 0
+        return ComplexInf
+    end
+    d = abs2(z)
+    return Complex(z.re/d, -z.im/d)
+end
+
+
+function my_div(w::Complex, z::Complex)
+    w,z = promote(w,z)
+    if isnan(w) || isnan(z)
+        return ComplexNaN
+    end
+    if isinf(z)
+        if isinf(w)
+            return ComplexNaN
+        end
+        return zero(typeof(z))
+    end
+    if z==0
+        if w==0
+            return ComplexNaN
+        end
+        return ComplexInf
+    end
+
+    zx = z.re
+    zy = z.im
+    top = w*conj(z)
+    d   = zx*zx + zy*zy
+    return Complex(top.re/d, top.im/d)
+end
+
+end #end of module
 
 show(io::IO, z::Complex)        = print(io, string(z,false))
 showcompact(io::IO, z::Complex) = print(io,string(z,true))
@@ -133,33 +165,12 @@ end
 
 # Division
 
-function /(w::Complex, z::Complex)
-    w,z = promote(w,z)
-    if isnan(w) || isnan(z)
-        return ComplexNaN
-    end
-    if isinf(z)
-        if isinf(w)
-            return ComplexNaN
-        end
-        return zero(typeof(z))
-    end
-    if z==0
-        if w==0
-            return ComplexNaN
-        end
-        return ComplexInf
-    end
-
-    zx = z.re
-    zy = z.im
-    top = w*conj(z)
-    d   = zx*zx + zy*zy
-    return Complex(top.re/d, top.im/d)
-end
-
 /(w::Complex, x::Real) = w * RiemannComplexNumbers.my_inv(Complex(x))
 /(x::Real, z::Complex) = Complex(x)*RiemannComplexNumbers.my_inv(z)
+
+/(w::Complex, z::Complex) = RiemannComplexNumbers.my_div(w,z)
+/(w::Complex128, z::Complex128) = RiemannComplexNumbers.my_div(w,z)
+
 
 # These cover the cases in complex.jl (Julia 0.3.10)
 inv(w::Complex{Float64}) = RiemannComplexNumbers.my_inv(w)
@@ -183,7 +194,7 @@ end
 ==(x::Real, z::Complex) = Complex(x) == z
 
 
-import Base.string, Base.hash
+import Base.string
 
 function string(z::Complex,compact::Bool=true)
     if isnan(z)
@@ -224,27 +235,4 @@ function string(z::Complex,compact::Bool=true)
     end
 
     return string(a) * sp * op * sp * string(abs(b)) * "im"
-
-end
-
-function hash(z::Complex, h::Uint = uint(0) )
-    (a,b) = reim(z)
-
-    if a==0
-        a = zero(a)
-    end
-
-    if b==0
-        b = zero(b)
-    end
-
-    if isnan(z)
-        a = NaN
-        b = NaN
-    elseif isinf(z)
-        a = Inf
-        b = Inf
-    end
-
-    return hash(a,hash(b,h))
 end
