@@ -146,13 +146,13 @@ julia> 1/z
 
 ### ~~Our division method doesn't always get executed~~
 
-**This problem has been (mostly) fixed.** 
+**This problem has been fixed.**  My confidence in this assertion is not 
+overwhelming. I think the fixes I put in place take care of all situations,
+but I'm not 100% sure.
 
-If the command `using RiemannComplexNumbers` is executed *before* 
-any complex arithmetic, then I think all is well. 
 
 ---
-*Description of (mostly) fixed bug*
+*Description of this now-repaired  bug*
 
 Division of a nonzero `Complex` value by zero should give
 `ComplexInf`, as in this example:
