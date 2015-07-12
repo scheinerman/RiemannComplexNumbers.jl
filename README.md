@@ -144,7 +144,15 @@ julia> 1/z
 0.0 - 4.999999999999999im
 ```
 
-### Our division method doesn't always get executed
+### ~~Our division method doesn't always get executed~~
+
+**This problem has been (mostly) fixed.** 
+
+If the command `using RiemannComplexNumbers` is executed *before* 
+any complex arithmetic, then I think all is well. 
+
+---
+*Description of (mostly) fixed bug*
 
 Division of a nonzero `Complex` value by zero should give
 `ComplexInf`, as in this example:
@@ -173,7 +181,7 @@ julia> @which (1.0+0.0im)/(0.0+0.0im)
 
 Thanks to @pearlzli for pointing this out. Anyone know how to fix this??
 
-
+---
 
 
 
