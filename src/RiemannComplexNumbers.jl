@@ -3,10 +3,6 @@
 
 import Base.inv, Base.Complex, Base.show, Base.showcompact
 
-
-
-
-
 function Complex(x::Real, y::Real)
     if isnan(x) || isnan(y)
         return ComplexNaN
@@ -44,34 +40,94 @@ function my_inv(z::Complex)
     if z == 0
         return ComplexInf
     end
-    d = abs2(z)
-    return Complex(z.re/d, -z.im/d)
+    return my_inv_work(z)
 end
 
+my_inv_work(z::Complex)  = conj(z)/abs2(z)
+my_inv_work{T<:Integer}(z::Complex{T}) = inv(float(z))
 
-function my_div(w::Complex, z::Complex)
-    w,z = promote(w,z)
-    if isnan(w) || isnan(z)
+
+function my_inv_work(w::Complex128)
+    c, d = reim(w)
+    half = 0.5
+    two = 2.0
+    cd = max(abs(c), abs(d))
+    ov = realmax(c)
+    un = realmin(c)
+    ep = eps(Float64)
+    bs = two/(ep*ep)
+    s = 1.0
+    cd >= half*ov  && (c=half*c; d=half*d; s=s*half) # scale down c,d
+    cd <= un*two/ep && (c=c*bs; d=d*bs; s=s*bs      ) # scale up c,d
+    if abs(d)<=abs(c)
+        r = d/c
+        t = 1.0/(c+d*r)
+        p = t
+        q = -r * t
+    else
+        c, d = d, c
+        r = d/c
+        t = 1.0/(c+d*r)
+        p = r * t
+        q = -t
+    end
+    return Complex128(p*s,q*s) # undo scaling
+end
+
+# z-->b w-->a
+function my_div(a::Complex, b::Complex)
+    a,b = promote(a,b)
+    if isnan(a) || isnan(b)
         return ComplexNaN
     end
-    if isinf(z)
-        if isinf(w)
+    if isinf(b)
+        if isinf(a)
             return ComplexNaN
         end
-        return zero(typeof(z))
+        return zero(typeof(z=a))
     end
-    if z==0
-        if w==0
+    if b==0
+        if a==0
             return ComplexNaN
         end
         return ComplexInf
     end
+    return my_div_work(a,b)
+end
 
-    zx = z.re
-    zy = z.im
-    top = w*conj(z)
-    d   = zx*zx + zy*zy
-    return Complex(top.re/d, top.im/d)
+# special cases are already handled before this is called. code taken
+# from julia's complex.jl
+function my_div_work(a::Complex, b::Complex)
+    are = real(a); aim = imag(a); bre = real(b); bim = imag(b)
+    if abs(bre) <= abs(bim)
+        r = bre / bim
+        den = bim + r*bre
+        Complex((are*r + aim)/den, (aim*r - are)/den)
+    else
+        r = bim / bre
+        den = bre + r*bim
+        Complex((are + aim*r)/den, (aim - are*r)/den)
+    end
+end
+
+# Also taken from complex.jl
+function my_div_work(z::Complex128, w::Complex128)
+    a, b = reim(z); c, d = reim(w)
+    half = 0.5
+    two = 2.0
+    ab = max(abs(a), abs(b))
+    cd = max(abs(c), abs(d))
+    ov = realmax(a)
+    un = realmin(a)
+    ep = eps(Float64)
+    bs = two/(ep*ep)
+    s = 1.0
+    ab >= half*ov  && (a=half*a; b=half*b; s=two*s ) # scale down a,b
+    cd >= half*ov  && (c=half*c; d=half*d; s=s*half) # scale down c,d
+    ab <= un*two/ep && (a=a*bs; b=b*bs; s=s/bs      ) # scale up a,b
+    cd <= un*two/ep && (c=c*bs; d=d*bs; s=s*bs      ) # scale up c,d
+    abs(d)<=abs(c) ? ((p,q)=robust_cdiv1(a,b,c,d)  ) : ((p,q)=robust_cdiv1(b,a,d,c); q=-q)
+    return Complex128(p*s,q*s) # undo scaling
 end
 
 end #end of module

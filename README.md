@@ -54,7 +54,7 @@ do not know how to suppress those warnings).
 julia> using RiemannComplexNumbers
 Warning: Method definition Complex(Real,Real) in module Base at
 complex.jl:5 overwritten in module RiemannComplexNumbers at ...
-(and so on for many lines)
+(and so on for many, many lines)
 ```
 
 But once we're past that, the examples presented above behave nicely.
@@ -120,9 +120,19 @@ the `show` function has been redefined to print this as
 opposed to `3 + 2im`. The compact forms for `ComplexInf` and
 `ComplexNaN` are `C_Inf` and `C_NaN`.
 
-## Problems with complex division
+## ~~Problems with complex division~~
 
-### Inaccuracies
+### ~~Inaccuracies~~
+
+**This problem has been fixed** (I think).
+
+I copied code from `base.complex.jl` that handles complex division and
+incoporated that into my methods. So now `1/0.2im` returns
+`0.0 - 0.5im` as desired. 
+
+---
+**Description of the (now solved) problem**
+
 
 Our current reimplementation of complex floating point arithmetic,
 even for finite values, is not the same as the functions distributed
@@ -143,6 +153,8 @@ Warning: Method definition Complex(Real,Real) in ...
 julia> 1/z
 0.0 - 4.999999999999999im
 ```
+---
+
 
 ### ~~Our division method doesn't always get executed~~
 
