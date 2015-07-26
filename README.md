@@ -191,7 +191,7 @@ julia> @which (1.0+0.0im)/(0.0+0.0im)
 /(z::Complex{Float64},w::Complex{Float64}) at complex.jl:162
 ```
 
-Thanks to @pearlzli for pointing this out. Anyone know how to fix this??
+Thanks to @pearlzli for pointing this out. ~~Anyone know how to fix this??~~
 
 ---
 
