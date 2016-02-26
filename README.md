@@ -46,7 +46,7 @@ redefines the basic arithmetic operations to work with this
 value. Also just as `0/0` yields a `NaN` value for real arithmetic, we
 provide a single `ComplexNaN` value as the result of some operations.
 
-We being with `using RiemannComplexNumbers`. Sadly, this generates a
+We begin with `using RiemannComplexNumbers`. Sadly, this generates a
 host of warning messages about functions being redefined (we
 do not know how to suppress those warnings).
 
