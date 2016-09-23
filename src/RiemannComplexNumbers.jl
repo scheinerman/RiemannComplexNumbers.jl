@@ -2,6 +2,7 @@
 # complex infinity and a single complex NaN.
 
 import Base.inv, Base.Complex, Base.show, Base.showcompact
+import Base.+, Base.-, Base.*, Base./, Base.==
 
 function Complex(x::Real, y::Real)
     if isnan(x) || isnan(y)
@@ -231,7 +232,7 @@ end
 # These cover the cases in complex.jl (Julia 0.3.10)
 inv(w::Complex{Float64}) = RiemannComplexNumbers.my_inv(w)
 inv{T<:Integer}(w::Complex{T}) = RiemannComplexNumbers.my_inv(w)
-inv{T<:Union(Float16,Float32)}(w::Complex{T}) = RiemannComplexNumbers.my_inv(w)
+inv{T<:AbstractFloat}(w::Complex{T}) = RiemannComplexNumbers.my_inv(w)
 inv(w::Complex) = RiemannComplexNumbers.my_inv(w)
 
 # Equality
