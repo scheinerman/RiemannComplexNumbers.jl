@@ -127,7 +127,7 @@ opposed to `3 + 2im`. The compact forms for `ComplexInf` and
 **This problem has been fixed** (I think).
 
 I copied code from `base.complex.jl` that handles complex division and
-incoporated that into my methods. So now `1/0.2im` returns
+incorporated that into my methods. So now `1/0.2im` returns
 `0.0 - 0.5im` as desired. 
 
 ---
