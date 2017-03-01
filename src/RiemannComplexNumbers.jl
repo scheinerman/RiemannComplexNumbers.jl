@@ -59,7 +59,7 @@ function my_inv_work(w::Complex128)
     bs = two/(ep*ep)
     s = 1.0
     cd >= half*ov  && (c=half*c; d=half*d; s=s*half) # scale down c,d
-    cd <= un*two/ep && (c=c*bs; d=d*bs; s=s*bs      ) # scale up c,d
+    cd <= un*two/ep && (c=c*bs; d=d*bs; s=s*bs     ) # scale up c,d
     if abs(d)<=abs(c)
         r = d/c
         t = 1.0/(c+d*r)
@@ -96,8 +96,8 @@ function my_div(a::Complex, b::Complex)
     return my_div_work(a,b)
 end
 
-# special cases are already handled before this is called. code taken
-# from julia's complex.jl
+# Special cases are already handled before this is called. Code taken
+# from Julia's complex.jl
 function my_div_work(a::Complex, b::Complex)
     are = real(a); aim = imag(a); bre = real(b); bim = imag(b)
     if abs(bre) <= abs(bim)
@@ -125,8 +125,8 @@ function my_div_work(z::Complex128, w::Complex128)
     s = 1.0
     ab >= half*ov  && (a=half*a; b=half*b; s=two*s ) # scale down a,b
     cd >= half*ov  && (c=half*c; d=half*d; s=s*half) # scale down c,d
-    ab <= un*two/ep && (a=a*bs; b=b*bs; s=s/bs      ) # scale up a,b
-    cd <= un*two/ep && (c=c*bs; d=d*bs; s=s*bs      ) # scale up c,d
+    ab <= un*two/ep && (a=a*bs; b=b*bs; s=s/bs     ) # scale up a,b
+    cd <= un*two/ep && (c=c*bs; d=d*bs; s=s*bs     ) # scale up c,d
     abs(d)<=abs(c) ? ((p,q)=robust_cdiv1(a,b,c,d)  ) : ((p,q)=robust_cdiv1(b,a,d,c); q=-q)
     return Complex128(p*s,q*s) # undo scaling
 end
@@ -134,7 +134,7 @@ end
 end #end of module
 
 show(io::IO, z::Complex)        = print(io, string(z,false))
-showcompact(io::IO, z::Complex) = print(io,string(z,true))
+showcompact(io::IO, z::Complex) = print(io, string(z,true))
 
 
 #### BASIC FOUR OPERATIONS ####
