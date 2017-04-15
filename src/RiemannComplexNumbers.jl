@@ -25,8 +25,14 @@ end
 
 
 module RiemannComplexNumbers
-
+"""
+Complex not-a-number in the `RiemannComplexNumbers` module.
+"""
 const ComplexNaN = Complex(NaN,NaN)
+
+"""
+Single complex infinity in the `RiemannComplexNumbers` module.
+"""
 const ComplexInf = Complex(Inf,Inf)
 
 export ComplexNaN, ComplexInf
