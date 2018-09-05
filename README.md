@@ -1,5 +1,8 @@
 # The `RiemannComplexNumbers` module
 
+
+**This module is undergoing an major reworking. Old `README` here for now.**
+
 This is a Julia module that redefines some `Complex` operations to
 give mathematically more sensible results.
 
@@ -128,7 +131,7 @@ opposed to `3 + 2im`. The compact forms for `ComplexInf` and
 
 I copied code from `base.complex.jl` that handles complex division and
 incorporated that into my methods. So now `1/0.2im` returns
-`0.0 - 0.5im` as desired. 
+`0.0 - 0.5im` as desired.
 
 ---
 **Description of the (now solved) problem**
@@ -147,7 +150,7 @@ julia> 1/z
 0.0 - 5.0im
 
 julia> using RiemannComplexNumbers
-Warning: Method definition Complex(Real,Real) in ... 
+Warning: Method definition Complex(Real,Real) in ...
 (and so on for many lines)
 
 julia> 1/z
@@ -158,7 +161,7 @@ julia> 1/z
 
 ### ~~Our division method doesn't always get executed~~
 
-**This problem has been fixed.**  My confidence in this assertion is not 
+**This problem has been fixed.**  My confidence in this assertion is not
 overwhelming. I think the fixes I put in place take care of all situations,
 but I'm not 100% sure.
 
