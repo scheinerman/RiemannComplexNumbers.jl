@@ -1,10 +1,10 @@
 module RiemannComplexNumbers
 
 import Base.inv, Base.Complex, Base.show, Base.showcompact
-import Base.+, Base.-, Base.*, Base./, Base.==
-import Base: isinf, isnan, iszero
+import Base.+, Base.-, Base.*, Base./, Base.==, Base.hash
+import Base: isinf, isnan, iszero, Complex
 
-export RC, ComplexInf, ComplexNaN
+export RC, ComplexInf, ComplexNaN, IM
 
 struct RC{T<:Complex} <: Number
     val::T
@@ -15,6 +15,7 @@ end
 
 const ComplexNaN = RC((0+0im)/0,true,false)
 const ComplexInf = RC(0+0im,false,true)
+const IM = RC(im,false,false)
 
 function RC(z::Complex)
     if isnan(z)
@@ -24,6 +25,16 @@ function RC(z::Complex)
         return ComplexInf
     end
     return RC(z,false,false)
+end
+
+function Complex(a::RC)::Complex
+    if isinf(a)
+        return Inf + Inf*im
+    end
+    if isnan(a)
+        return NaN
+    end
+    return a.val
 end
 
 RC(z::Real) = RC(z+0im)
@@ -48,80 +59,34 @@ function show(io::IO, z::RC)
     end
 end
 
-function (+)(a::RC, b::RC)
+function (==)(a::RC, b::RC)::Bool
     if isnan(a) || isnan(b)
-        return ComplexNaN
+        return false
     end
-    if isinf(a) || isinf(b)
-        return ComplexInf
-    end
-    return RC(a.val + b.val)
-end
-
-function (-)(a::RC)
-    return RC(-a.val, a.nan_flag, a.inf_flag)
-end
-
-function (-)(a::RC,b::RC)
-    return a + (-b)
-end
-
-function (*)(a::RC, b::RC)
-    if isnan(a) || isnan(b)
-        return ComplexNaN
-    end
-    if (isinf(a)&&iszero(b))||(iszero(a)&&isinf(b))  # 0 x Inf
-        return ComplexNaN
-    end
-    if isinf(a) || isinf(b)
-        return ComplexInf
-    end
-    return RC(a.val * b.val)
-end
-
-function inv(z::RC{T}) where T
-    if isnan(z)
-        return ComplexNaN
-    end
-    if iszero(z)
-        return ComplexInf
-    end
-    if isinf(z) return
-        RC(zero(T))
-    end
-    return RC(1/z.val)
-end
-
-function (/)(a::RC{S}, b::RC{T}) where {S,T}
-    if isnan(a) || isnan(b)
-        return ComplexNaN
-    end
-
-    # zero denominator cases
-    if iszero(b) && !iszero(a)
-        return ComplexInf
-    end
-    if iszero(b) && iszero(a)
-        return ComplexNaN
-    end
-
-    # infinite denominator cases
     if isinf(a) && isinf(b)
-        return ComplexNaN
+        return true
     end
-    if isinf(b)
-        return RC(zero{S})
+    if isinf(a) || isinf(b)
+        return false
     end
+    return a.val == b.val
+end
 
-    # infinite numerator, nonzero/noninf denominator
+function hash(a::RC, h::UInt=UInt(0))
     if isinf(a)
-        return a
+        return hash(true,h)
     end
-
-    return RC(a.val / b.val)
+    if isnan(a)
+        return hash(false,h)
+    end
+    return hash(a.val,h)
 end
 
 
+import Base.promote_rule
 
+promote_rule(::Type{RC{T}}, ::Type{S}) where {T,S} = RC
 
+include("arithmetic.jl")
+include("functions.jl")
 end  # end of module
