@@ -1,8 +1,6 @@
 # The `RiemannComplexNumbers` module
 
 
-**This module is undergoing an major reworking. Old `README` here for now.**
-
 [![Build Status](https://travis-ci.org/scheinerman/RiemannComplexNumbers.jl.svg?branch=master)](https://travis-ci.org/scheinerman/RiemannComplexNumbers.jl)
 
 [![Coverage Status](https://coveralls.io/repos/scheinerman/RiemannComplexNumbers.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/scheinerman/RiemannComplexNumbers.jl?branch=master)
