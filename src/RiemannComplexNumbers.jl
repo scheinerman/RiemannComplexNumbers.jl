@@ -55,7 +55,9 @@ function show(io::IO, z::RC)
     elseif isnan(z)
         print(io,"ComplexNaN")
     else
-        print(io,z.val)
+        x ,y = reim(z.val)
+        mid = y<0 ? "-" : "+"
+        print(io,"$x $mid $(abs(y))IM")
     end
 end
 
@@ -81,6 +83,8 @@ function hash(a::RC, h::UInt=UInt(0))
     end
     return hash(a.val,h)
 end
+
+
 
 
 import Base.promote_rule

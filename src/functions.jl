@@ -1,6 +1,30 @@
 # standard complex number functions
 
-import Base: conj, abs, sqrt, exp, angle
+import Base: conj, abs, sqrt, exp, angle, real, imag 
+
+
+
+
+function real(a::RC)
+    if isnan(a)
+        return NaN
+    end
+    if isinf(a)
+        return Inf
+    end
+    return real(a.val)
+end
+
+
+function imag(a::RC)
+    if isnan(a)
+        return NaN
+    end
+    if isinf(a)
+        return Inf
+    end
+    return imag(a.val)
+end
 
 function conj(a::RC)::RC
     if isinf(a) || isnan(a)
@@ -40,4 +64,4 @@ function angle(a::RC)::Real
         return NaN
     end
     return angle(a.val)
-end 
+end
