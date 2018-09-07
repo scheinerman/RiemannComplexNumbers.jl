@@ -8,8 +8,8 @@
 [![codecov.io](http://codecov.io/github/scheinerman/RiemannComplexNumbers.jl/coverage.svg?branch=master)](http://codecov.io/github/scheinerman/RiemannComplexNumbers.jl?branch=master)
 
 
-This is a Julia module that redefines some `Complex` operations to
-give mathematically more sensible results.
+This Julia module gives an alternative to `Complex` numbers and their
+operations to give mathematically more sensible results.
 
 ## The Complex Problem
 
