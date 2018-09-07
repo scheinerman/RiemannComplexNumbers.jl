@@ -1,6 +1,6 @@
 # standard complex number functions
 
-import Base: conj, abs, sqrt, exp, angle, real, imag 
+import Base: conj, abs, sqrt, exp, angle, real, imag, log
 
 
 
@@ -57,6 +57,13 @@ function exp(a::RC)::RC
         return ComplexNaN
     end
     return RC(exp(a.val))
+end
+
+function log(a::RC)::RC
+    if isnan(a) || iszero(a) || isinf(a)
+        return ComplexNaN
+    end
+    return RC(log(a.val))
 end
 
 function angle(a::RC)::Real
