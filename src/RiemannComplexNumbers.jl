@@ -76,10 +76,10 @@ end
 
 function hash(a::RC, h::UInt=UInt(0))
     if isinf(a)
-        return hash(true,h)
+        return hash(Inf,h)
     end
     if isnan(a)
-        return hash(false,h)
+        return hash(NaN,h)
     end
     return hash(a.val,h)
 end
