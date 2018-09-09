@@ -35,3 +35,11 @@ z = 3 - 4IM
 
 @test abs(exp(log(-1+0IM)) + 1) < 1e-10
 @test abs(log(exp(-1+2IM)) - (-1+2IM)) < 1e-10
+
+a = RC(3.0 + 0.0im)
+b = a'
+@test a==b
+@test !isequal(a,b)
+
+@test ComplexNaN != NaN
+@test isequal(ComplexNaN,NaN)

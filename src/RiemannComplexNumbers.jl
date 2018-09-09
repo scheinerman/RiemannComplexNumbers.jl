@@ -2,7 +2,7 @@ module RiemannComplexNumbers
 
 import Base.inv, Base.Complex, Base.show, Base.showcompact
 import Base.+, Base.-, Base.*, Base./, Base.==, Base.hash
-import Base: isinf, isnan, iszero, Complex
+import Base: isinf, isnan, iszero, Complex, isequal
 
 export RC, ComplexInf, ComplexNaN, IM
 
@@ -55,9 +55,8 @@ function show(io::IO, z::RC)
     elseif isnan(z)
         print(io,"ComplexNaN")
     else
-        x ,y = reim(z.val)
-        mid = y<0 ? "-" : "+"
-        print(io,"$x $mid $(abs(y))IM")
+        sz = string(z.val)[1:end-2] * "IM"
+        print(io,sz)
     end
 end
 
@@ -73,6 +72,32 @@ function (==)(a::RC, b::RC)::Bool
     end
     return a.val == b.val
 end
+
+isequal(a::RC,b::Number) = isequal(promote(a,b)...)
+isequal(a::Number,b::RC) = isequal(promote(a,b)...)
+
+function isequal(a::RC, b::RC)::Bool
+    # for isequal, nan's compare true
+    if isnan(a) && isnan(b)
+        return true
+    end
+    # but if only one is nan, then it's false
+    if isnan(a) || isnan(b)
+        return false
+    end
+    ## complex infinites are equal
+    if isinf(a) && isinf(b)
+        return true
+    end
+    if isinf(a) || isinf(b)
+        return false
+    end
+    # finally, fall back on isequal for Complex
+    return isequal(a.val, b.val)
+end
+
+
+
 
 function hash(a::RC, h::UInt=UInt(0))
     if isinf(a)
