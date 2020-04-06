@@ -1,0 +1,11 @@
+name = "RiemannComplexNumbers"
+uuid = "3f3442c8-4998-5f9a-b6f6-804928b92bc1"
+
+[compat]
+julia = "≥ 0.7.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
