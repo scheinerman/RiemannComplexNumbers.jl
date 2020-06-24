@@ -1,6 +1,6 @@
 module RiemannComplexNumbers
 
-import Base.inv, Base.Complex, Base.show, Base.showcompact
+import Base.inv, Base.Complex, Base.show
 import Base.+, Base.-, Base.*, Base./, Base.==, Base.hash
 import Base: isinf, isnan, iszero, Complex, isequal
 
