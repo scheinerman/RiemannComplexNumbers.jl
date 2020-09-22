@@ -1,4 +1,4 @@
-# The `RiemannComplexNumbers` module
+# RiemannComplexNumbers
 
 
 [![Build Status](https://travis-ci.org/scheinerman/RiemannComplexNumbers.jl.svg?branch=master)](https://travis-ci.org/scheinerman/RiemannComplexNumbers.jl)
