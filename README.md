@@ -1,11 +1,8 @@
 # RiemannComplexNumbers
 
 
-[![Build Status](https://travis-ci.org/scheinerman/RiemannComplexNumbers.jl.svg?branch=master)](https://travis-ci.org/scheinerman/RiemannComplexNumbers.jl)
+[![Build Status](https://travis-ci.com/scheinerman/RiemannComplexNumbers.jl.svg?branch=master)](https://travis-ci.com/scheinerman/RiemannComplexNumbers.jl)
 
-[![Coverage Status](https://coveralls.io/repos/scheinerman/RiemannComplexNumbers.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/scheinerman/RiemannComplexNumbers.jl?branch=master)
-
-[![codecov.io](http://codecov.io/github/scheinerman/RiemannComplexNumbers.jl/coverage.svg?branch=master)](http://codecov.io/github/scheinerman/RiemannComplexNumbers.jl?branch=master)
 
 
 This Julia module gives an alternative to `Complex` numbers and their
