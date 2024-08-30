@@ -13,9 +13,9 @@ struct RC{T<:Complex} <: Number
 end
 
 
-const ComplexNaN = RC((0+0im)/0,true,false)
-const ComplexInf = RC(0+0im,false,true)
-const IM = RC(im,false,false)
+const ComplexNaN = RC((0 + 0im) / 0, true, false)
+const ComplexInf = RC(0 + 0im, false, true)
+const IM = RC(im, false, false)
 
 function RC(z::Complex)
     if isnan(z)
@@ -24,12 +24,12 @@ function RC(z::Complex)
     if isinf(z)
         return ComplexInf
     end
-    return RC(z,false,false)
+    return RC(z, false, false)
 end
 
 function Complex(a::RC)::Complex
     if isinf(a)
-        return Inf + Inf*im
+        return Inf + Inf * im
     end
     if isnan(a)
         return NaN
@@ -37,7 +37,7 @@ function Complex(a::RC)::Complex
     return a.val
 end
 
-RC(z::Real) = RC(z+0im)
+RC(z::Real) = RC(z + 0im)
 
 isinf(z::RC) = z.inf_flag
 isnan(z::RC) = z.nan_flag
@@ -51,12 +51,12 @@ end
 
 function show(io::IO, z::RC)
     if isinf(z)
-        print(io,"ComplexInf")
+        print(io, "ComplexInf")
     elseif isnan(z)
-        print(io,"ComplexNaN")
+        print(io, "ComplexNaN")
     else
         sz = string(z.val)[1:end-2] * "IM"
-        print(io,sz)
+        print(io, sz)
     end
 end
 
@@ -73,8 +73,8 @@ function (==)(a::RC, b::RC)::Bool
     return a.val == b.val
 end
 
-isequal(a::RC,b::Number) = isequal(promote(a,b)...)
-isequal(a::Number,b::RC) = isequal(promote(a,b)...)
+isequal(a::RC, b::Number) = isequal(promote(a, b)...)
+isequal(a::Number, b::RC) = isequal(promote(a, b)...)
 
 function isequal(a::RC, b::RC)::Bool
     # for isequal, nan's compare true
@@ -99,14 +99,14 @@ end
 
 
 
-function hash(a::RC, h::UInt=UInt(0))
+function hash(a::RC, h::UInt = UInt(0))
     if isinf(a)
-        return hash(Inf,h)
+        return hash(Inf, h)
     end
     if isnan(a)
-        return hash(NaN,h)
+        return hash(NaN, h)
     end
-    return hash(a.val,h)
+    return hash(a.val, h)
 end
 
 

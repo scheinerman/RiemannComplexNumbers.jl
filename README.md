@@ -1,7 +1,6 @@
 # RiemannComplexNumbers
 
 
-[![Build Status](https://travis-ci.com/scheinerman/RiemannComplexNumbers.jl.svg?branch=master)](https://travis-ci.com/scheinerman/RiemannComplexNumbers.jl)
 
 
 
@@ -17,7 +16,7 @@ both `+Inf` and `-Inf` in Julia. However, there are problems with the
 implementation of infinite values for Julia `Complex` numbers. Here
 are some examples.
 
-```julia
+```
 # For real numbers, division by 0 gives an infinite result
 julia> 1/0
 Inf
@@ -46,7 +45,7 @@ single infinite value (we call `ComplexInfinity`). We introduce a new type
 called `RC` (an abbreviation for Riemann Complex number). Let's see how the
 previous calculations work in this new context:
 
-```julia
+```
 julia> using RiemannComplexNumbers
 
 julia> (2+3IM)/0
@@ -61,7 +60,7 @@ true
 
 The constant `IM` is the replacement for `im` that can be used to construct
 Riemann Complex numbers. In general, wrapping values in `RC` will work:
-```julia
+```
 julia> RC(2)
 2 + 0IM
 
@@ -70,7 +69,7 @@ julia> RC(3-im)
 ```
 
 Dividing by zero gives the following:
-```julia
+```
 julia> (2-3IM)/0
 ComplexInf
 
@@ -82,7 +81,7 @@ ComplexNaN
 ```
 
 To convert an `RC` number to a `Complex` do this:
-```julia
+```
 julia> z = 3.5 - 5IM
 3.5 - 5.0IM
 
