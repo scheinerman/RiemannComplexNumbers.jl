@@ -99,7 +99,7 @@ end
 
 
 
-function hash(a::RC, h::UInt = UInt(0))
+function hash(a::RC, h::UInt)
     if isinf(a)
         return hash(Inf, h)
     end
